@@ -1,110 +1,133 @@
-
-
 #register
 # - first name, last name, password, email
 # - generate user account
 
-#login
-# - account number, password
 
-#create new
+#login
+# - account number & password
 
 
 #bank operations
 
 #Initializing the system
 import random
-database = {}  # dictionary
+from datetime import datetime
+now = datetime.now()
+#database = {} #dictionary
 
 def init():
-    
-    print("Welcome to BankPHP")  
+   
+    print("Welcome to Bank of Northwind")
+    haveAccount = int(input("Do you have account with us: 1 (yes) 2 (no) \n"))
 
-    haveAccount = int(input("Do you have an account with us: 1 (yes) 2 (no) "))
-        
-    if(haveAccount ==1):
+    if(haveAccount == 1):      
         login()
-    
-    elif(haveAccount == 2):
+
+    elif(haveAccount == 2):      
         register()
 
     else:
-        print("You have selected invalid option.")   
-        init()       
+        print("You have selected invalid option")
+        init()
 
-database_user = {
-    '0123456789':'passwordChandra',
-    '0000000000':'passwordCameron',
-    '1111111111':'passwordChristian'
-}
+
+databaseUser={1111111111: ['Seyi','Onifade','seyionifade@zuriteam.com', 'PasswordSeyi'],
+              2222222222:["Wendy", "Rice", "wrice@team.com", "PasswordRice"],
+              0000000000:["Michelle","May","mmay@gmail.com","PasswordMay"]}
 
 def login():
-    #login function here
-    account = input("What is your account? \n")
-    password = input("Your password? \n")
-    if(account in database_user and password == database_user[account]):
-        print("Welcome to BankPHP!")
-        return True
-    else:
-        print("Password or Username Incorrect. Please try again")
-        return False
+    
+    counter=0 
+
+    accountNumberFromUser = int(input("\nWhat is your Account Number?\n"))
+    password = input("\nWhat is your password?\n")
+
+    for accountNumber,userDetails in databaseUser.items():
+        if (accountNumber==accountNumberFromUser and userDetails[3]==password) :               
+            counter=1
+            bankOperation()
+    
+    
+    if (counter==0):
+        print("Invalid account or password")
+        userContinue=input("Would you like to continue y/n?\n")
+        if (userContinue=='y'): login()
+        else: 
+            print("Good Bye\n")
+            exit()
 
 
 
 def register():
-    print("*****Register an account*****")
+
+    print("****** Register *******")
+
     email = input("What is your email address? \n")
     first_name = input("What is your first name? \n")
     last_name = input("What is your last name? \n")
-    password = input("Create a password for yourself: \n")
+    password = input("create a password for yourself \n")
 
     accountNumber = generateAccountNumber()
 
-    database[accountNumber] = [first_name, last_name, email, password]
+    databaseUser[accountNumber] = [ first_name, last_name, email, password ]
 
-    print("Your account has been created.")
-    print(" == === ====== ===== ===")
+    print("Your Account Has been created")
+    print(" == ==== ====== ===== ===")
     print("Your account number is: %d" % accountNumber)
     print("Make sure you keep it safe")
-    print(" == === ====== ===== ===")
+    print(" == ==== ====== ===== ===")
 
     login()
 
+def bankOperation():
+   
+    print("\n***************  Welcome to Bank of Northwind  ****************")
+    dt_string = now.strftime("%m/%d/%Y %H:%M:%S")
+    print("Current date and time:", dt_string) 
 
-def bankOperation(user):
-
-    print("Welcome %s %s" % (user[0], user[1]))
-
-    
     selectedOption = int(input("What would you like to do? (1) Deposit (2) Withdrawal (3) Logout (4) Exit \n"))
 
-    if(selectedOption == 1):
+    if(selectedOption == 1):      
         depositOperation()
 
     elif(selectedOption == 2):
         withdrawalOperation()
+
     elif(selectedOption == 3):
         logout()
-    elif(selectedOption == 4):   
+    elif(selectedOption == 4):
         exit()
+
     else:
-        
-        print("Invalid option selected")  
-        bankOperation(user)
+        print("Invalid option selected")
+        bankOperation()
+
 
 def withdrawalOperation():
-    print("withdrawal")
-
+    balance = 250
+    withdrawalAmt = int(input('How much do you want to withdraw? '))
+    if withdrawalAmt > balance:
+        print('The amount requested is greater than the balance. ')
+    else:
+        balance = balance - withdrawalAmt
+        print('Take your cash. Your balance is $%s.' % balance) 
+        bankOperation()        
+        
 def depositOperation():
-    print("Deposit Operations")
-            
+    balance = 250   
+    depositAmt = int(input('How much do you want to deposit? '))
+    balance = depositAmt + balance
+    print('Your deposit was successful. Balance: $%d.' % balance)
+    bankOperation()
+        
 
 def generateAccountNumber():
     return random.randrange(1111111111,9999999999)   
 
 def logout():
-    login()
+    init()
 
  ##### ACTUAL BANKING SYSTEM  ####
 
 init()
+
